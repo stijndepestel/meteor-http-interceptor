@@ -1,7 +1,7 @@
 Package.describe({
   name: "stijndepestel:http-interceptor",
   summary: "Intercepts HTTP calls and allows fake implementations to take over domains. Used for testing.",
-  version: "0.5.0",
+  version: "0.6.0",
   git: "https://github.com/stijndepestel/meteor-http-interceptor.git",
   debugOnly: true
 });
