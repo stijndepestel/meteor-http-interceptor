@@ -1,18 +1,18 @@
-var Fiber                 = Npm.require('fibers'),
-    stream                = Npm.require('stream'),
-    bodyParser            = Npm.require('body-parser'),
-    URL                   = Npm.require('url'),
-    _interceptors         = {},
-    _originalCallFunction = {},
-    _ignores              = [],
-    _routeNameCache       = {},
-    _recording            = false,
-    log                   = loglevel.createPackageLogger('http-interceptor', defaultLevel = 'info');
+var Fiber = Npm.require('fibers'),
+  stream = Npm.require('stream'),
+  bodyParser = Npm.require('body-parser'),
+  URL = Npm.require('url'),
+  _interceptors = {},
+  _originalCallFunction = {},
+  _ignores = [],
+  _routeNameCache = {},
+  _recording = false,
+  log = loglevel.createPackageLogger('http-interceptor', defaultLevel = 'info');
 
 
 _init();
 
-var rawConnectHandlers = Package['webapp'].WebApp.rawConnectHandlers;
+var rawConnectHandlers = Package[ 'webapp' ].WebApp.rawConnectHandlers;
 rawConnectHandlers.use(bodyParser.text());
 rawConnectHandlers.use(Meteor.bindEnvironment(function (req, res, next) {
 
@@ -28,13 +28,13 @@ rawConnectHandlers.use(Meteor.bindEnvironment(function (req, res, next) {
   var end = res.end;
   res.end = Meteor.bindEnvironment(function (chunk, encoding) {
     res.end = end;
-    if (chunk) {
+    if ( chunk ) {
       responseBody += chunk;
     }
 
     var url = URL.parse(URL.resolve(Meteor.absoluteUrl(), req.url));
 
-    if (_shouldRecord(url.href)) {
+    if ( _shouldRecord(url.href) ) {
 
       HttpInterceptor.Calls.insert({
         timestamp: new Date().getTime(),
@@ -64,11 +64,11 @@ _.extend(HttpInterceptor, {
 
   registerInterceptor: function (originalHost, newHost) {
     log.debug('Intercepting all calls to', originalHost, 'and redirecting to', newHost);
-    _interceptors[originalHost] = newHost;
+    _interceptors[ originalHost ] = newHost;
   },
 
   ignore: function (urls) {
-    if (urls instanceof Array) {
+    if ( urls instanceof Array ) {
       _ignores = _ignores.concat(urls);
     } else {
       _ignores.push(urls);
@@ -91,28 +91,28 @@ _.extend(HttpInterceptor, {
     var self = this;
     _.each(session, function (call) {
 
-      if (call.direction === 'OUT') {
+      if ( call.direction === 'OUT' ) {
 
         // setup a route on this guy
         var route = call.request.url.hostname + call.request.url.pathname;
 
         // keep track of the routes we create
-        if (_routeNameCache[route]) {
+        if ( _routeNameCache[ route ] ) {
           // we've already got a canned response for this route
           return;
         }
-        _routeNameCache[route] = true;
+        _routeNameCache[ route ] = true;
 
         log.debug('Creating server side route at', call.request.url.href);
 
         // create a server side route that behaved like the recording did
-        Router.route(route, function () {
+        Picker.route(route, function (params, req, res) {
           log.debug('Serving request to', Meteor.absoluteUrl(route), 'and responding with');
-          //log.debug('Serving request to', route, 'and responding with', JSON.stringify(call.response));
-          var self = this;
-          self.response.writeHead(call.response.statusCode, {'Content-Type': call.response.headers['content-type']});
-          self.response.end(call.response ? call.response.content : null);
-        }, {where: 'server'});
+          //log.debug('Serving request to', route, 'and responding with',
+          // JSON.stringify(call.response));
+          res.writeHead(call.response.statusCode, { 'Content-Type': call.response.headers[ 'content-type' ] });
+          res.end(call.response ? call.response.content : null);
+        });
 
       }
     });
@@ -127,13 +127,13 @@ Meteor.methods({
 
 HttpInterceptor.reset();
 
-function _init () {
+function _init() {
 
   _originalCallFunction = Package.http.HTTP.call;
 
   Package.http.HTTP.call = function (method, url, options, callback) {
 
-    if (! callback && typeof options === "function") {
+    if ( !callback && typeof options === "function" ) {
       callback = options;
       options = null;
     }
@@ -152,7 +152,7 @@ function _init () {
     // do the HTTP call and get the response
     var response = _originalCallFunction.call(this, method, url, options, callback);
 
-    if (!_shouldRecord(url)) {
+    if ( !_shouldRecord(url) ) {
       return response;
     }
 
@@ -172,15 +172,15 @@ function _init () {
   };
 }
 
-function _shouldRecord (url) {
+function _shouldRecord(url) {
   return _recording && !_shouldIgnore(url);
 }
 
-function _shouldIgnore (url) {
+function _shouldIgnore(url) {
   // ignore any fields the user is not interested in
   var matches = false;
   _.each(_ignores, function (ignore) {
-    if (url.match(ignore)) {
+    if ( url.match(ignore) ) {
       matches = true;
     }
   });

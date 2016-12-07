@@ -1,8 +1,8 @@
 Package.describe({
-  name: "xolvio:http-interceptor",
+  name: "stijndepestel:http-interceptor",
   summary: "Intercepts HTTP calls and allows fake implementations to take over domains. Used for testing.",
-  version: "0.5.1",
-  git: "https://github.com/xolvio/meteor-http-interceptor.git",
+  version: "0.5.0",
+  git: "https://github.com/stijndepestel/meteor-http-interceptor.git",
   debugOnly: true
 });
 
@@ -20,7 +20,8 @@ Package.on_use(function (api) {
     'practicalmeteor:loglevel@1.2.0_1'
   ], ['server', 'client']);
 
-  api.use(['iron:router@1.0.9'], ['server']);
+  api.use(['meteorhacks:picker@1.0.3'], ['server']);
+
 
   api.add_files('client.css', 'client');
   api.add_files('client.html', 'client');
