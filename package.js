@@ -12,7 +12,7 @@ Npm.depends({
 
 Package.on_use(function (api) {
   api.use([
-    'http',
+    'http@1.2.10',
     'templating@1.1.1',
     'mongo@1.1.0',
     'underscore@1.0.3',
