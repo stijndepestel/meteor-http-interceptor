@@ -40,7 +40,7 @@ retry@1.0.3
 routepolicy@1.0.5
 spacebars@1.0.6
 spacebars-compiler@1.0.6
-stijndepestel:http-interceptor@0.5.0
+stijndepestel:http-interceptor@0.6.0
 templating@1.1.1
 tracker@1.0.7
 ui@1.0.6
